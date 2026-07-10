@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Mic } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import Image from 'next/image';
 
 interface Message {
   role: 'user' | 'bot';
@@ -182,8 +183,8 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
       {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-white/80 dark:border-white/5 bg-white/70 dark:bg-navy/40 backdrop-blur-3xl sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300">
         <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple to-indigo-600 flex items-center justify-center text-white mr-4 shadow-md shadow-purple/20">
-            <Bot size={24} />
+          <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white">
+            <Image src="/NeuraWell_logo.jpg" alt="NeuraWell Logo" width={40} height={40} className="object-cover w-full h-full" />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-700 dark:text-white drop-shadow-sm dark:drop-shadow-md transition-colors duration-300">NeuraWell Chat</h1>
