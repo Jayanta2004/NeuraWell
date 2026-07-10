@@ -181,7 +181,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
   return (
     <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-white/80 dark:border-white/5 bg-white/70 dark:bg-navy/40 backdrop-blur-3xl sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300">
+      <div className="flex items-center justify-between p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white">
             <Image src="/NeuraWell_logo.jpg" alt="NeuraWell Logo" width={40} height={40} className="object-cover w-full h-full" />
@@ -198,7 +198,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
           <button onClick={handleExportChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
             Export
           </button>
-          <button onClick={handleClearChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-red-500/30 bg-red-500/5 text-red-500 dark:text-red-400 hover:bg-red-500/15 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+          <button onClick={handleClearChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-white/10 bg-transparent text-white/70 hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors">
             Clear Chat
           </button>
         </div>
@@ -212,7 +212,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
           return (
             <div key={idx} className={`flex animate-slide-up-fade ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex max-w-[80%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm dark:shadow-md ${msg.role === 'user' ? 'bg-gradient-to-br from-sky-500 to-indigo-500 ml-3 shadow-sky-500/20' : 'bg-white/70 dark:bg-navy/60 border border-white/80 dark:border-white/10 mr-3 transition-colors duration-300'}`}>
+                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm dark:shadow-md ${msg.role === 'user' ? 'bg-gradient-to-br from-sky-500 to-indigo-500 ml-3 shadow-sky-500/20' : 'bg-white/70 dark:bg-navy/60 border border-white/80 dark:border-white/10 mr-3 transition-colors duration-300 animate-pulse'}`}>
                   {msg.role === 'user' ? <User size={16} className="text-white" /> : <Bot size={16} className="text-purple" />}
                 </div>
                 <div className={`p-4 rounded-2xl whitespace-pre-wrap transition-colors duration-300 ${
@@ -222,11 +222,11 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
                       ? 'bg-red-50/80 dark:bg-red-950/40 text-red-800 dark:text-rose-100 border-t border-red-100 dark:border-red-500/50 border-l border-red-50 dark:border-red-500/20 backdrop-blur-xl rounded-tl-none shadow-[0_8px_30px_rgba(239,68,68,0.1)] dark:shadow-[0_8px_30px_rgba(239,68,68,0.15)]'
                       : isPoem
                         ? 'bg-white/70 dark:bg-navy/60 text-stone-500 dark:text-slate-200 border-t border-purple/10 dark:border-purple/40 border-l border-purple/5 dark:border-purple/20 backdrop-blur-xl rounded-tl-none shadow-[0_8px_30px_rgba(139,92,246,0.08)] dark:shadow-[0_8px_30px_rgba(139,92,246,0.15)] font-serif tracking-wide'
-                        : 'bg-white/80 dark:bg-navy/40 text-slate-700 dark:text-slate-200 border border-white/80 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 backdrop-blur-xl rounded-tl-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20'
+                        : 'bg-white/80 dark:bg-white/5 text-slate-700 dark:text-slate-200 border border-white/80 dark:border-white/5 backdrop-blur-xl rounded-tl-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20'
                 }`}>
                   {msg.content}
                   {msg.timestamp && (
-                    <span className={`text-[10px] block mt-1.5 opacity-60 font-medium ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                    <span className={`text-[10px] block mt-1.5 font-medium text-gray-400 dark:text-white/60 ${msg.role === 'user' ? 'text-right text-white/80' : 'text-left'}`}>
                       {msg.timestamp}
                     </span>
                   )}
@@ -261,7 +261,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
                     setInput(text);
                     setTimeout(() => document.getElementById('send-btn')?.click(), 50);
                   }}
-                  className="px-5 py-2.5 rounded-full border border-purple/20 dark:border-purple/30 bg-black/5 dark:bg-white/5 backdrop-blur-md text-purple-dark dark:text-purple-light font-medium text-sm hover:bg-purple/10 dark:hover:bg-purple/20 hover:border-purple/40 dark:hover:border-purple/50 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(139,92,246,0.15)] dark:hover:shadow-[0_4px_20px_rgba(139,92,246,0.2)] transition-all duration-300 cursor-pointer"
+                  className="px-5 py-2.5 rounded-full border border-purple/20 dark:border-purple/30 bg-black/5 dark:bg-white/5 backdrop-blur-md text-purple-dark dark:text-purple-light font-medium text-sm hover:bg-purple-800/30 dark:hover:bg-purple-800/30 hover:border-purple/40 dark:hover:border-purple/50 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(139,92,246,0.15)] dark:hover:shadow-[0_4px_20px_rgba(139,92,246,0.2)] transition-all duration-200 ease-in-out cursor-pointer"
                 >
                   {text}
                 </button>
@@ -274,7 +274,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
       </div>
 
       {/* Input */}
-      <div className="p-6 bg-white/70 dark:bg-navy/20 backdrop-blur-3xl border-t border-white/80 dark:border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)] relative z-10 transition-colors duration-300">
+      <div className="p-6 bg-white/70 bg-opacity-80 dark:bg-navy/20 dark:bg-opacity-80 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)] relative z-10 transition-colors duration-300">
         <div className="relative flex items-center max-w-4xl mx-auto w-full">
           <input
             type="text"

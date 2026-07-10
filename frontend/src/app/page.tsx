@@ -26,7 +26,7 @@ export default function Home() {
       </section>
 
       {/* 30% Sidebar */}
-      <section className="w-[30%] h-full flex flex-col relative z-10 bg-white/50 dark:bg-navy/80 backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-colors duration-500">
+      <section className="w-[30%] h-full flex flex-col relative z-10 bg-white/50 dark:bg-[#0B0F19] backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-colors duration-500">
         <MoodWidget mood={mood} severity={severity} />
         <ActionPlan plan={actionPlan} />
       </section>

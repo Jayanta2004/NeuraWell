@@ -19,8 +19,8 @@ export default function ActionPlan({ plan }: ActionPlanProps) {
       <div className="p-6 flex-1 overflow-y-auto">
         {plan.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-4 opacity-70 dark:opacity-60 transition-opacity">
-            <div className="w-20 h-20 rounded-full bg-stone-50/50 dark:bg-white/5 flex items-center justify-center mb-2 shadow-sm dark:shadow-inner transition-colors duration-300">
-              <ListTodo size={32} className="text-slate-400 dark:text-slate-400" />
+            <div className="w-20 h-20 rounded-full bg-stone-50/50 dark:bg-purple-900/20 flex items-center justify-center mb-2 shadow-sm dark:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-colors duration-300">
+              <ListTodo size={32} className="text-slate-400 dark:text-purple-400" />
             </div>
             <p className="text-slate-400 dark:text-slate-400 font-medium max-w-[80%] transition-colors duration-300">Share how you're feeling to get your personalized action plan.</p>
           </div>
