@@ -211,7 +211,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
       return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Your browser does not support Speech Recognition. Please try Chrome or Edge.");
       return;
