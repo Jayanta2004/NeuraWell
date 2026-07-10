@@ -26,8 +26,7 @@ export default function MoodWidget({ mood, severity }: MoodWidgetProps) {
   }
 
   return (
-    <div className="p-6 mx-6 mt-6 rounded-2xl bg-white/60 dark:bg-navy/40 backdrop-blur-xl border border-stone-100/60 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 shadow-sm shadow-stone-200/50 dark:shadow-lg dark:shadow-black/20 animate-slide-up-fade relative overflow-hidden group hover:shadow-md hover:shadow-stone-200/60 dark:hover:shadow-[0_15px_40px_rgba(0,0,0,0.3)] transition-all duration-500">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-purple/10 rounded-full blur-[40px] pointer-events-none group-hover:bg-purple/20 transition-all duration-700"></div>
+    <div className="p-6 mx-6 mt-6 rounded-2xl bg-gradient-to-br from-white to-purple-50 dark:from-navy/40 dark:to-navy/40 border border-purple-100 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 shadow-sm animate-slide-up-fade relative overflow-hidden group hover:shadow-md transition-all duration-500">
       
       <div className="flex items-center space-x-3 mb-5 relative z-10">
         <div className="w-8 h-8 rounded-full bg-stone-50/50 dark:bg-white/5 border border-stone-100 dark:border-white/10 flex items-center justify-center shadow-sm dark:shadow-inner transition-colors duration-300">

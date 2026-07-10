@@ -29,7 +29,7 @@ export default function ActionPlan({ plan }: ActionPlanProps) {
             {plan.map((step, idx) => (
               <div 
                 key={idx} 
-                className="group flex items-start space-x-4 p-5 rounded-2xl bg-white/60 dark:bg-navy/40 backdrop-blur-lg border border-stone-100/60 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 hover:border-purple/30 dark:hover:border-purple/40 transition-all duration-500 shadow-sm shadow-stone-200/50 dark:shadow-lg dark:shadow-black/20 hover:shadow-md hover:shadow-stone-200/60 dark:hover:shadow-[0_15px_40px_rgba(139,92,246,0.15)] hover:-translate-y-1 cursor-default"
+                className="group flex items-start space-x-4 p-5 rounded-2xl bg-white dark:bg-navy/40 border border-gray-200 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 transition-all duration-500 shadow-sm hover:shadow-md hover:-translate-y-1 cursor-default"
                 style={{ animation: `fadeIn 0.5s ease-out ${idx * 0.1}s both` }}
               >
                 <div className="flex-shrink-0 mt-0.5">
@@ -37,7 +37,7 @@ export default function ActionPlan({ plan }: ActionPlanProps) {
                     <CheckCircle2 size={14} className="text-purple-dark dark:text-purple-light group-hover:text-purple-900 dark:group-hover:text-white transition-colors" />
                   </div>
                 </div>
-                <p className="text-slate-500 dark:text-slate-200 leading-relaxed text-sm font-medium transition-colors duration-300">{step}</p>
+                <p className="text-gray-700 dark:text-slate-200 leading-relaxed text-sm font-medium transition-colors duration-300">{step.replace(/^\d+[\.\)]\s*/, '')}</p>
               </div>
             ))}
           </div>

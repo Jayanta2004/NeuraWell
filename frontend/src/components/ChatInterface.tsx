@@ -3,6 +3,8 @@ import { Send, Bot, User, Mic } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import Image from 'next/image';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+
 interface Message {
   role: 'user' | 'bot';
   content: string;
@@ -27,6 +29,15 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -57,11 +68,17 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
     setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: timeNow }]);
     setIsLoading(true);
 
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/chat', {
+      const res = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage })
+        body: JSON.stringify({ message: userMessage }),
+        signal: abortControllerRef.current.signal
       });
       
       const reader = res.body?.getReader();
@@ -101,14 +118,20 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
                 if (data.is_emergency !== undefined) {
                   setMessages(prev => {
                     const newMessages = [...prev];
-                    newMessages[botMessageIndex].isEmergency = data.is_emergency;
+                    newMessages[botMessageIndex] = {
+                      ...newMessages[botMessageIndex],
+                      isEmergency: data.is_emergency
+                    };
                     return newMessages;
                   });
                 }
               } else if (data.type === 'token') {
                 setMessages(prev => {
                   const newMessages = [...prev];
-                  newMessages[botMessageIndex].content += data.content;
+                  newMessages[botMessageIndex] = {
+                    ...newMessages[botMessageIndex],
+                    content: newMessages[botMessageIndex].content + data.content
+                  };
                   return newMessages;
                 });
               } else if (data.type === 'plan') {
@@ -120,7 +143,11 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        console.log("Fetch aborted");
+        return;
+      }
       console.error("Error communicating with the backend:", error);
       setIsLoading(false);
       setMessages(prev => {
@@ -143,7 +170,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
     console.log("Clear chat button clicked");
     try {
       console.log("Calling /api/clear");
-      await fetch('http://127.0.0.1:5000/api/clear', { method: 'POST' });
+      await fetch(`${API_URL}/api/clear`, { method: 'POST' });
       setMessages([{ 
         role: 'bot', 
         content: 'Hello! I am NeuraWell. How are you feeling today?',
@@ -248,7 +275,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
           <button onClick={handleExportChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
             Export
           </button>
-          <button onClick={handleClearChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-white/10 bg-transparent text-white/70 hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors">
+          <button onClick={handleClearChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-black/10 dark:border-white/10 bg-transparent text-slate-600 dark:text-white/70 hover:border-red-500/30 dark:hover:border-red-500/50 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors duration-300">
             Clear Chat
           </button>
         </div>
