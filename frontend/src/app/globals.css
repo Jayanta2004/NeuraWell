@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  
+  --color-navy: var(--navy);
+  --color-navy-light: var(--navy-light);
+  --color-navy-border: var(--navy-border);
+  
+  --color-purple: #8b5cf6;
+  --color-purple-light: #a78bfa;
+  --color-purple-dark: #6d28d9;
+}
+
+:root {
+  /* Premium Healthcare AI Theme */
+  --bg: #f4f7f9; /* Soft, breathable clinical sky-white */
+  --fg: #1e293b; /* Deep slate for high-contrast, professional readability */
+  --navy: #ffffff; /* Pure white for panels to achieve clean glassmorphism */
+  --navy-light: #f0f4f8; /* Soft slate-blue for secondary areas */
+  --navy-border: #e2e8f0; /* Crisp slate border */
+}
+
+.dark {
+  /* Premium Dark Theme */
+  --bg: #0b0f19;
+  --fg: #f1f5f9;
+  --navy: #111827;
+  --navy-light: #1f2937;
+  --navy-border: #374151;
+}
+
+body {
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  font-family: var(--font-inter), sans-serif;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for better visual experience */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-navy-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-purple);
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-30px) translateX(20px); }
+  66% { transform: translateY(20px) translateX(-20px); }
+  100% { transform: translateY(0px) translateX(0px); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes aurora {
+  0% { transform: translate(0%, 0%) scale(1); }
+  33% { transform: translate(5%, -5%) scale(1.1); }
+  66% { transform: translate(-5%, 5%) scale(0.9); }
+  100% { transform: translate(0%, 0%) scale(1); }
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 10s ease-in-out infinite;
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-aurora {
+  animation: aurora 25s ease-in-out infinite alternate;
+}
+
+.animate-aurora-fast {
+  animation: aurora 18s ease-in-out infinite alternate-reverse;
+}
