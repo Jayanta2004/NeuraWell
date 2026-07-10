@@ -4,10 +4,12 @@ NeuraWell is an AI-powered mental wellness application that offers users a safe 
 
 ## ✨ Key Features
 
-- **Empathetic AI Chatbot:** Driven by `gpt-4o-mini`, providing context-aware and compassionate responses.
-- **Emotion & Severity Analysis:** Automatically analyzes the user's sentiment to route them to the appropriate agent (e.g., Planner Agent for actionable steps, Intervention Agent for creative soothing, or Emergency Guardrail for severe cases).
+- **Empathetic AI Chatbot:** Driven by concurrent LLM architectures, providing context-aware and compassionate responses.
+- **Emotion & Severity Analysis:** Automatically analyzes the user's sentiment to route them to the appropriate agent logic.
+- **Concurrent Agent Processing:** Uses `asyncio` to run the Planner Agent (generating actionable steps via `gpt-3.5-turbo`) and the Intervention Agent (providing creative, soothing conversation via `gpt-4o`) in parallel for lightning-fast responses.
+- **Real-Time SSE Streaming:** Utilizes Server-Sent Events to stream AI text tokens to the UI in real-time, eliminating loading delays.
 - **Long-term Conversation Memory:** Utilizes **ChromaDB** (Vector Database) and OpenAI Embeddings to persist chat history for context-aware continued conversations.
-- **Modern UI/UX:** A stunning, responsive frontend built with Next.js, React, Tailwind CSS, and glassmorphism design principles.
+- **Modern UI/UX:** A stunning, responsive frontend built with Next.js, React, Tailwind CSS, and elegant glassmorphism design.
 
 ## 📁 Project Structure
 
@@ -60,7 +62,16 @@ cd frontend
 
 # Install dependencies
 npm install
+```
 
+**Environment Variables:**
+Create a `.env.local` file in the `frontend` directory:
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:5000
+```
+
+**Start the Client:**
+```bash
 # Run the development server
 npm run dev
 ```
@@ -76,9 +87,10 @@ npm run dev
 - Lucide React (Icons)
 
 ### Backend & AI Core
-- Python & Flask
+- Python & Flask (with `flask[async]`)
+- **Server-Sent Events (SSE):** Streams multiplexed JSON tokens for real-time rendering.
 - **LangChain:** Orchestrates LLM chains and agents
-- **OpenAI (`gpt-4o-mini`):** Powers the core conversational and analysis models
+- **OpenAI (`gpt-3.5-turbo` & `gpt-4o`):** Balances speed and high-quality creative output.
 - **ChromaDB:** Local vector database for persistent conversation embeddings
 - **Pydantic:** Structured LLM outputs for agent routing
 
