@@ -1,68 +1,87 @@
-# NeuraWell
+# 🧠 NeuraWell
 
-NeuraWell is a mental wellness web application featuring an AI-powered chatbot designed to help users navigate their mental health, build action plans, and track their moods.
+NeuraWell is an AI-powered mental wellness application that offers users a safe space to navigate their emotions. With a compassionate AI agent, NeuraWell provides emotional analysis, actionable grounding plans, and creative interventions (like storytelling and poetry) tailored to the user's current mood.
 
-## Project Structure
+## ✨ Key Features
 
-The project consists of two main components:
+- **Empathetic AI Chatbot:** Driven by `gpt-4o-mini`, providing context-aware and compassionate responses.
+- **Emotion & Severity Analysis:** Automatically analyzes the user's sentiment to route them to the appropriate agent (e.g., Planner Agent for actionable steps, Intervention Agent for creative soothing, or Emergency Guardrail for severe cases).
+- **Long-term Conversation Memory:** Utilizes **ChromaDB** (Vector Database) and OpenAI Embeddings to persist chat history for context-aware continued conversations.
+- **Modern UI/UX:** A stunning, responsive frontend built with Next.js, React, Tailwind CSS, and glassmorphism design principles.
 
-- **Frontend**: A modern, responsive web application built with [Next.js](https://nextjs.org/), React, and Tailwind CSS.
-- **Backend**: A robust API server built with Python, Flask, and an AI agent core (handling conversational logic).
+## 📁 Project Structure
 
-## Getting Started
+- `frontend/`: Next.js web application with a dynamic and beautiful chat interface.
+- `backend/`: Python Flask REST API integrating LangChain, OpenAI, and ChromaDB.
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- Python (3.9 or higher)
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [Python](https://www.python.org/) (3.9 or higher)
+- OpenAI API Key
 
-### Frontend Setup
+### 1. Backend Setup
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+The backend handles the AI logic, routing, and database storage.
 
-### Backend Setup
+```bash
+cd backend
+python -m venv test_venv
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-2. Create and activate a virtual environment (recommended):
-   ```bash
-   python -m venv test_venv
-   # On Windows:
-   test_venv\Scripts\activate
-   # On macOS/Linux:
-   source test_venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Set up your environment variables:
-   Create a `.env` file in the `backend` directory based on the provided `.env.example` file and add your API keys.
-5. Start the backend server:
-   ```bash
-   python app.py
-   ```
+# Activate Virtual Environment (Windows)
+test_venv\Scripts\activate
+# Activate Virtual Environment (macOS/Linux)
+source test_venv/bin/activate
 
-## Technologies Used
+# Install requirements
+pip install -r requirements.txt
+```
 
-- **Frontend**: Next.js, React, Tailwind CSS, Lucide React (Icons)
-- **Backend**: Python, Flask, Flask-CORS
-- **AI Core**: LangChain / Custom LLM Integrations, ChromaDB (Vector Database)
+**Environment Variables:**
+Create a `.env` file in the `backend` directory:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
 
-## License
+**Start the Server:**
+```bash
+python app.py
+```
+*The backend will run on `http://127.0.0.1:5000`.*
+
+### 2. Frontend Setup
+
+The frontend provides the sleek user interface.
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
+
+*Open [http://localhost:3000](http://localhost:3000) in your browser.*
+
+## 🛠️ Technologies Used
+
+### Frontend
+- Next.js
+- React
+- Tailwind CSS
+- Lucide React (Icons)
+
+### Backend & AI Core
+- Python & Flask
+- **LangChain:** Orchestrates LLM chains and agents
+- **OpenAI (`gpt-4o-mini`):** Powers the core conversational and analysis models
+- **ChromaDB:** Local vector database for persistent conversation embeddings
+- **Pydantic:** Structured LLM outputs for agent routing
+
+## 📄 License
 
 This project is licensed under the MIT License.
