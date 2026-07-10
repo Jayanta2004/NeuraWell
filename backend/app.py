@@ -1,10 +1,23 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
+import asyncio
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-from agent_core import process_chat, clear_memory
+from agent_core import process_chat_stream, clear_memory
+
+def stream_bridge(message):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    gen = process_chat_stream(message)
+    try:
+        while True:
+            yield loop.run_until_complete(gen.__anext__())
+    except StopAsyncIteration:
+        pass
+    finally:
+        loop.close()
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
@@ -12,18 +25,12 @@ def chat():
     message = data.get('message', '')
 
     try:
-        response = process_chat(message)
+        return Response(stream_bridge(message), mimetype='text/event-stream')
     except Exception as e:
         import traceback
         traceback.print_exc()
         print(f"Error in agent processing: {e}")
-        response = {
-            "reply": "Sorry, I am currently experiencing some difficulties connecting to my AI core.",
-            "action_plan": ["Take a deep breath.", "Try again in a few moments.", "Focus on the present."],
-            "is_emergency": False
-        }
-    
-    return jsonify(response)
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/clear', methods=['POST'])
 def clear():

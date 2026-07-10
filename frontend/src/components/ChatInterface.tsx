@@ -63,29 +63,79 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage })
       });
-      const data = await res.json();
       
-      setMessages(prev => [...prev, { 
-        role: 'bot', 
-        content: data.reply,
-        isEmergency: data.is_emergency,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
-      if (data.action_plan) {
-        onNewActionPlan(data.action_plan);
-      }
-      if (data.mood && data.severity) {
-        onMoodUpdate(data.mood, data.severity);
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("No reader available");
+      
+      const decoder = new TextDecoder();
+      let botMessageIndex = -1;
+      let buffer = '';
+
+      setMessages(prev => {
+        botMessageIndex = prev.length;
+        return [...prev, { role: 'bot', content: '', timestamp: timeNow }];
+      });
+      
+      setIsLoading(false); // Hide the loading skeleton
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        buffer += decoder.decode(value, { stream: true });
+        
+        const lines = buffer.split('\n\n');
+        buffer = lines.pop() || ''; 
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const dataStr = line.slice(6);
+            if (!dataStr.trim()) continue;
+            
+            try {
+              const data = JSON.parse(dataStr);
+              if (data.type === 'metadata') {
+                if (data.mood && data.severity !== undefined) {
+                  onMoodUpdate(data.mood, data.severity);
+                }
+                if (data.is_emergency !== undefined) {
+                  setMessages(prev => {
+                    const newMessages = [...prev];
+                    newMessages[botMessageIndex].isEmergency = data.is_emergency;
+                    return newMessages;
+                  });
+                }
+              } else if (data.type === 'token') {
+                setMessages(prev => {
+                  const newMessages = [...prev];
+                  newMessages[botMessageIndex].content += data.content;
+                  return newMessages;
+                });
+              } else if (data.type === 'plan') {
+                onNewActionPlan(data.content);
+              }
+            } catch (e) {
+              console.error("Error parsing SSE data", e, dataStr);
+            }
+          }
+        }
       }
     } catch (error) {
       console.error("Error communicating with the backend:", error);
-      setMessages(prev => [...prev, { 
-        role: 'bot', 
-        content: 'Sorry, I am having trouble connecting to the server.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
-    } finally {
       setIsLoading(false);
+      setMessages(prev => {
+        const lastMsg = prev[prev.length - 1];
+        if (lastMsg.role === 'bot' && !lastMsg.content) {
+            const newMsgs = [...prev];
+            newMsgs[newMsgs.length - 1].content = 'Sorry, I am having trouble connecting to the server.';
+            return newMsgs;
+        }
+        return [...prev, { 
+          role: 'bot', 
+          content: 'Sorry, I am having trouble connecting to the server.',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }];
+      });
     }
   };
 
@@ -238,13 +288,16 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
         {isLoading && (
           <div className="flex justify-start mb-6 animate-slide-up-fade">
             <div className="flex flex-row max-w-[80%]">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/70 dark:bg-navy/60 border border-white/80 dark:border-white/10 mr-3 flex items-center justify-center shadow-sm dark:shadow-md transition-colors duration-300">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/70 dark:bg-navy/60 border border-white/80 dark:border-white/10 mr-3 flex items-center justify-center shadow-sm dark:shadow-md transition-colors duration-300 animate-pulse">
                 <Bot size={16} className="text-purple" />
               </div>
-              <div className="flex items-center space-x-1.5 px-5 py-4 rounded-2xl bg-white/70 dark:bg-navy/40 backdrop-blur-xl border border-white/80 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 text-stone-300 rounded-tl-none shadow-sm shadow-stone-200/50 dark:shadow-lg dark:shadow-black/20 h-[58px] transition-colors duration-300">
-                <span className="w-2 h-2 rounded-full bg-purple-light" style={{ animation: 'typingDot 1.4s infinite both', animationDelay: '0s' }}></span>
-                <span className="w-2 h-2 rounded-full bg-purple-light" style={{ animation: 'typingDot 1.4s infinite both', animationDelay: '0.2s' }}></span>
-                <span className="w-2 h-2 rounded-full bg-purple-light" style={{ animation: 'typingDot 1.4s infinite both', animationDelay: '0.4s' }}></span>
+              <div className="flex items-center space-x-3 px-5 py-4 rounded-2xl bg-white/70 dark:bg-navy/40 backdrop-blur-xl border border-white/80 dark:border-none dark:border-t dark:border-white/10 dark:border-l dark:border-white/5 text-slate-500 dark:text-slate-300 rounded-tl-none shadow-sm shadow-stone-200/50 dark:shadow-lg dark:shadow-black/20 h-[58px] transition-colors duration-300">
+                <span className="text-sm font-medium animate-pulse">NeuraWell is thinking...</span>
+                <div className="flex space-x-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple/50 dark:bg-purple-light/50" style={{ animation: 'typingDot 1.4s infinite both', animationDelay: '0s' }}></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple/50 dark:bg-purple-light/50" style={{ animation: 'typingDot 1.4s infinite both', animationDelay: '0.2s' }}></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple/50 dark:bg-purple-light/50" style={{ animation: 'typingDot 1.4s infinite both', animationDelay: '0.4s' }}></span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,11 +1,14 @@
 import os
+import asyncio
 import threading
+import json
 from pydantic import BaseModel, Field
 from typing import List, Literal
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -26,11 +29,9 @@ except Exception as e:
 class EmotionAnalysisOutput(BaseModel):
     detected_mood: str = Field(description="The detected mood of the user (e.g., anxious, sad, happy).")
     severity: int = Field(description="Severity of the mood from 1 to 10.", ge=1, le=10)
-    routing_decision: Literal['planner', 'intervention'] = Field(description="Route to 'intervention' if the user asks for a poem, story, or creative coping mechanism. Otherwise, route to 'planner'.")
 
-# Planner/Intervention Agent Output Schema
-class AgentOutput(BaseModel):
-    reply: str = Field(description="The conversational reply to the user.")
+# Planner Agent Output Schema
+class PlannerOutput(BaseModel):
     action_plan: List[str] = Field(description="A 3-step actionable plan.", min_items=3, max_items=3)
 
 # Initialize memory
@@ -49,13 +50,12 @@ def clear_memory():
     global memory
     memory.clear()
 
-def process_chat(user_message: str) -> dict:
+async def process_chat_stream(user_message: str):
     # Ensure OPENAI_API_KEY is available
     if not os.environ.get("OPENAI_API_KEY"):
-        return {
-            "reply": "Error: OPENAI_API_KEY is not set. Please check your .env file.",
-            "action_plan": ["Set up OpenAI API Key.", "Restart the server.", "Try again."]
-        }
+        yield f"data: {json.dumps({'type': 'token', 'content': 'Error: OPENAI_API_KEY is not set. Please check your .env file.'})}\n\n"
+        yield f"data: {json.dumps({'type': 'plan', 'content': ['Set up OpenAI API Key.', 'Restart the server.', 'Try again.']})}\n\n"
+        return
         
     # Re-initialize vectorstore if it failed previously due to missing API key
     global vectorstore, embeddings
@@ -70,28 +70,26 @@ def process_chat(user_message: str) -> dict:
     history = memory.messages
     
     # Initialize LLMs
-    analysis_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    planner_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
-    intervention_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.9)
+    analysis_llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+    planner_llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.7)
+    intervention_llm = ChatOpenAI(model="gpt-4o", temperature=0.9, streaming=True)
 
     # Create structured LLMs
     analyzer_agent = analysis_llm.with_structured_output(EmotionAnalysisOutput)
-    planner_agent = planner_llm.with_structured_output(AgentOutput)
-    intervention_agent = intervention_llm.with_structured_output(AgentOutput)
+    planner_agent = planner_llm.with_structured_output(PlannerOutput)
     
     # 2. Emotion Analysis
     analysis_prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an emotion analysis agent. Analyze the user's message and determine their mood, severity, and routing. "
+        ("system", "You are an emotion analysis agent. Analyze the user's message and determine their mood and severity. "
                    "Severity scoring criteria: "
                    "1-4: normal stress. "
                    "5-8: acute anxiety. "
-                   "9-10: STRICTLY for mentions of self-harm or severe crisis. "
-                   "Route to 'intervention' ONLY if the user explicitly asks for a poem, story, or creative writing. Otherwise route to 'planner'."),
+                   "9-10: STRICTLY for mentions of self-harm or severe crisis."),
         ("user", "{message}")
     ])
     
     analysis_chain = analysis_prompt | analyzer_agent
-    analysis_result = analysis_chain.invoke({"message": user_message})
+    analysis_result = await analysis_chain.ainvoke({"message": user_message})
     
     # Critical Escalation Guardrail
     if analysis_result.severity >= 9:
@@ -106,52 +104,49 @@ def process_chat(user_message: str) -> dict:
         memory.add_ai_message(emergency_reply)
         save_to_vectorstore_async(f"AI: {emergency_reply}")
         
-        return {
-            "reply": emergency_reply,
-            "action_plan": action_plan,
-            "is_emergency": True,
-            "mood": analysis_result.detected_mood,
-            "severity": analysis_result.severity
-        }
+        yield f"data: {json.dumps({'type': 'metadata', 'mood': analysis_result.detected_mood, 'severity': analysis_result.severity, 'is_emergency': True})}\n\n"
+        yield f"data: {json.dumps({'type': 'token', 'content': emergency_reply})}\n\n"
+        yield f"data: {json.dumps({'type': 'plan', 'content': action_plan})}\n\n"
+        return
         
-    # 3. Routing
-    if analysis_result.routing_decision == 'planner':
-        planner_prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are a grounding planner agent. The user's mood is {mood} (Severity: {severity}/10). Generate a compassionate reply and a 3-step actionable grounding plan. Do not write poems or stories."),
-            ("placeholder", "{history}"),
-            ("user", "{message}")
-        ])
-        chain = planner_prompt | planner_agent
-        result = chain.invoke({
-            "mood": analysis_result.detected_mood, 
-            "severity": analysis_result.severity,
-            "history": history,
-            "message": user_message
-        })
-    else:
-        # Intervention Agent
-        intervention_prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are an intervention agent with a deeply calming tone. The user's mood is {mood} (Severity: {severity}/10). Write a calming poem, story, or creative coping mechanism as requested, drawing inspiration from natural imagery (rivers, quiet spaces) and the spiritual depth of Bengali folk music. Bypass standard breathing exercises in your text, but provide a 3-step mindful action plan focused on reflection."),
-            ("placeholder", "{history}"),
-            ("user", "{message}")
-        ])
-        chain = intervention_prompt | intervention_agent
-        result = chain.invoke({
-            "mood": analysis_result.detected_mood, 
-            "severity": analysis_result.severity,
-            "history": history,
-            "message": user_message
-        })
+    # 3. Concurrent Execution
+    yield f"data: {json.dumps({'type': 'metadata', 'mood': analysis_result.detected_mood, 'severity': analysis_result.severity, 'is_emergency': False})}\n\n"
+    
+    planner_prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are a grounding planner agent. The user's mood is {mood} (Severity: {severity}/10). Generate a 3-step actionable grounding plan. Do not write poems or stories, just output the plan."),
+        ("placeholder", "{history}"),
+        ("user", "{message}")
+    ])
+    planner_chain = planner_prompt | planner_agent
+    
+    intervention_prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are an intervention agent with a deeply calming tone. The user's mood is {mood} (Severity: {severity}/10). Write a calming, conversational reply. If they asked for a poem or story, provide it, drawing inspiration from natural imagery (rivers, quiet spaces) and the spiritual depth of Bengali folk music. Do not provide a list or action plan, just the conversational response."),
+        ("placeholder", "{history}"),
+        ("user", "{message}")
+    ])
+    intervention_chain = intervention_prompt | intervention_llm | StrOutputParser()
+
+    planner_task = asyncio.create_task(planner_chain.ainvoke({
+        "mood": analysis_result.detected_mood, 
+        "severity": analysis_result.severity,
+        "history": history,
+        "message": user_message
+    }))
+    
+    full_reply = ""
+    async for chunk in intervention_chain.astream({
+        "mood": analysis_result.detected_mood, 
+        "severity": analysis_result.severity,
+        "history": history,
+        "message": user_message
+    }):
+        full_reply += chunk
+        yield f"data: {json.dumps({'type': 'token', 'content': chunk})}\n\n"
+
+    planner_res = await planner_task
+    yield f"data: {json.dumps({'type': 'plan', 'content': planner_res.action_plan})}\n\n"
         
     # 4. Save to memory
     memory.add_user_message(user_message)
-    memory.add_ai_message(result.reply)
-    save_to_vectorstore_async(f"AI: {result.reply}")
-    
-    return {
-        "reply": result.reply,
-        "action_plan": result.action_plan,
-        "is_emergency": False,
-        "mood": analysis_result.detected_mood,
-        "severity": analysis_result.severity
-    }
+    memory.add_ai_message(full_reply)
+    save_to_vectorstore_async(f"AI: {full_reply}")
