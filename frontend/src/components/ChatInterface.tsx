@@ -272,20 +272,22 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
         </div>
         
         {/* Chat Controls */}
-        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
-          <ThemeToggle />
-          <button onClick={handleExportChat} title="Export Chat" className="hidden sm:flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
-            <Download size={16} className="sm:mr-1.5" />
-            <span className="hidden sm:inline text-xs font-semibold">Export</span>
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="hidden md:flex">
+            <ThemeToggle />
+          </div>
+          <button onClick={handleExportChat} title="Export Chat" className="flex items-center justify-center p-2 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">
+            <Download size={20} className="sm:mr-1.5" />
+            <span className="hidden sm:block text-xs font-semibold">Export</span>
           </button>
-          <button onClick={handleClearChat} title="Clear Chat" className="hidden sm:flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-transparent text-slate-600 dark:text-white/70 hover:border-red-500/30 dark:hover:border-red-500/50 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors duration-300">
-            <Trash2 size={16} className="sm:mr-1.5" />
-            <span className="hidden sm:inline text-xs font-semibold">Clear</span>
+          <button onClick={handleClearChat} title="Clear Chat" className="flex items-center justify-center p-2 rounded-md hover:bg-red-500/20 dark:hover:bg-red-500/20 transition-colors text-slate-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400">
+            <Trash2 size={20} className="sm:mr-1.5" />
+            <span className="hidden sm:block text-xs font-semibold">Clear</span>
           </button>
           {onToggleSidebar && (
             <button 
               onClick={onToggleSidebar}
-              className="md:hidden p-2 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-600 dark:text-slate-200 transition-colors"
+              className="md:hidden flex items-center justify-center p-2 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white"
             >
               {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
