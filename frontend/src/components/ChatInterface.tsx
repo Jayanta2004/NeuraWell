@@ -258,7 +258,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
   ];
 
   return (
-    <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300 pt-20 md:pt-24">
+    <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300">
       {/* Header */}
       <div className="fixed top-0 left-0 w-full z-[100] !flex items-center justify-between p-4 sm:p-6 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300 shrink-0">
         <div className="flex items-center min-w-0">
@@ -294,7 +294,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pt-24 sm:pt-28 space-y-6">
         {messages.map((msg, idx) => {
           const isPoem = msg.role === 'bot' && !msg.isEmergency && msg.content.split('\n').length > 3;
           
