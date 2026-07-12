@@ -368,7 +368,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
       </div>
 
       {/* Input */}
-      <div className="sticky bottom-0 left-0 w-full bg-background border-t border-border/50 z-40 p-4 shrink-0">
+      <div className="sticky bottom-0 left-0 w-full bg-background border-t border-border/50 z-40 p-4 pb-0 mb-0 mt-auto shrink-0">
         <div className="relative flex items-center max-w-4xl mx-auto w-full">
           <input
             type="text"
