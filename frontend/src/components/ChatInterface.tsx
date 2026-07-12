@@ -260,25 +260,25 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
   return (
     <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300 pb-[76px] sm:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300">
-        <div className="flex items-center">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white">
+      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300 shrink-0">
+        <div className="flex items-center min-w-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white shrink-0">
             <Image src="/NeuraWell_logo.jpg" alt="NeuraWell Logo" width={40} height={40} className="object-cover w-full h-full" />
           </div>
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-700 dark:text-white drop-shadow-sm dark:drop-shadow-md transition-colors duration-300">NeuraWell Chat</h1>
+          <div className="min-w-0 pr-2">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-700 dark:text-white drop-shadow-sm dark:drop-shadow-md transition-colors duration-300 truncate">NeuraWell Chat</h1>
             <p className="hidden sm:block text-sm text-stone-400 dark:text-stone-300 font-medium transition-colors duration-300">Your safe space to talk</p>
           </div>
         </div>
         
         {/* Chat Controls */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
           <ThemeToggle />
-          <button onClick={handleExportChat} title="Export Chat" className="flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+          <button onClick={handleExportChat} title="Export Chat" className="hidden sm:flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
             <Download size={16} className="sm:mr-1.5" />
             <span className="hidden sm:inline text-xs font-semibold">Export</span>
           </button>
-          <button onClick={handleClearChat} title="Clear Chat" className="flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-transparent text-slate-600 dark:text-white/70 hover:border-red-500/30 dark:hover:border-red-500/50 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors duration-300">
+          <button onClick={handleClearChat} title="Clear Chat" className="hidden sm:flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-transparent text-slate-600 dark:text-white/70 hover:border-red-500/30 dark:hover:border-red-500/50 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors duration-300">
             <Trash2 size={16} className="sm:mr-1.5" />
             <span className="hidden sm:inline text-xs font-semibold">Clear</span>
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 import ChatInterface from "@/components/ChatInterface";
 import ActionPlan from "@/components/ActionPlan";
 import MoodWidget from "@/components/MoodWidget";
@@ -38,6 +39,18 @@ export default function Home() {
 
       {/* Sidebar */}
       <section className={`fixed md:relative top-0 right-0 z-50 md:z-10 w-full max-w-sm md:max-w-none md:w-[30%] h-full flex flex-col bg-slate-50 dark:bg-[#0B0F19] backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
+        
+        {/* Mobile Sidebar Header with Close Button */}
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-stone-200 dark:border-white/5 bg-white/50 dark:bg-navy/20 backdrop-blur-md sticky top-0 z-20">
+          <span className="font-bold text-slate-700 dark:text-white">Insights & Plan</span>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="p-2 rounded-full bg-black/5 dark:bg-white/5 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
         <MoodWidget mood={mood} severity={severity} />
         <ActionPlan plan={actionPlan} />
       </section>
