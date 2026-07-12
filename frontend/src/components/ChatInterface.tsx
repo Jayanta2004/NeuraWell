@@ -260,7 +260,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
   return (
     <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300 shrink-0">
+      <div className="flex items-center justify-between w-full p-4 sm:p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md sticky top-0 z-50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300 shrink-0">
         <div className="flex items-center min-w-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white shrink-0">
             <Image src="/NeuraWell_logo.jpg" alt="NeuraWell Logo" width={40} height={40} className="object-cover w-full h-full" />
