@@ -260,7 +260,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
   return (
     <div className="flex-1 min-h-0 w-full flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300">
       {/* Header */}
-      <div className="fixed top-0 left-0 w-full z-[100] !flex items-center justify-between p-4 sm:p-6 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300 shrink-0">
+      <div className="fixed top-0 left-0 w-full z-[100] !flex items-center px-4 md:px-6 py-4 sm:py-6 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300 shrink-0">
         <div className="flex items-center min-w-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white shrink-0">
             <Image src="/NeuraWell_logo.jpg" alt="NeuraWell Logo" width={40} height={40} className="object-cover w-full h-full" />
@@ -272,22 +272,22 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
         </div>
         
         {/* Chat Controls */}
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-3 ml-auto shrink-0">
           <div className="hidden md:flex">
             <ThemeToggle />
           </div>
-          <button onClick={handleExportChat} title="Export Chat" className="flex items-center justify-center p-2 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">
+          <button onClick={handleExportChat} title="Export Chat" className="flex items-center justify-center p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
             <Download size={20} className="sm:mr-1.5" />
             <span className="hidden sm:block text-xs font-semibold">Export</span>
           </button>
-          <button onClick={handleClearChat} title="Clear Chat" className="flex items-center justify-center p-2 rounded-md hover:bg-red-500/20 dark:hover:bg-red-500/20 transition-colors text-slate-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400">
+          <button onClick={handleClearChat} title="Clear Chat" className="flex items-center justify-center p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent hover:text-red-500 transition-colors">
             <Trash2 size={20} className="sm:mr-1.5" />
             <span className="hidden sm:block text-xs font-semibold">Clear</span>
           </button>
           {onToggleSidebar && (
             <button 
               onClick={onToggleSidebar}
-              className="md:hidden flex items-center justify-center p-2 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white"
+              className="md:hidden flex items-center justify-center p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             >
               {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
