@@ -296,7 +296,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 relative">
         {/* Spacer for fixed header */}
-        <div className="h-20 md:h-24 shrink-0 w-full" />
+        <div className="h-28 md:h-32 shrink-0 w-full" />
         {messages.map((msg, idx) => {
           const isPoem = msg.role === 'bot' && !msg.isEmergency && msg.content.split('\n').length > 3;
           
