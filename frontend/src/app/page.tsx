@@ -9,6 +9,7 @@ export default function Home() {
   const [actionPlan, setActionPlan] = useState<string[]>([]);
   const [mood, setMood] = useState<string | null>(null);
   const [severity, setSeverity] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleMoodUpdate = (newMood: string, newSeverity: number) => {
     setMood(newMood);
@@ -16,17 +17,27 @@ export default function Home() {
   };
 
   return (
-    <main className="flex h-screen w-full bg-background overflow-hidden">
-      {/* 70% Chat Interface */}
-      <section className="w-[70%] h-full flex flex-col relative z-10">
-        <ChatInterface 
-          onNewActionPlan={setActionPlan} 
+    <main className="flex flex-col md:flex-row h-[100dvh] w-full bg-background overflow-hidden relative">
+      {/* Chat Interface */}
+      <section className="w-full md:w-[70%] h-full flex flex-col relative z-10">
+        <ChatInterface
+          onNewActionPlan={setActionPlan}
           onMoodUpdate={handleMoodUpdate}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isSidebarOpen={isSidebarOpen}
         />
       </section>
 
-      {/* 30% Sidebar */}
-      <section className="w-[30%] h-full flex flex-col relative z-10 bg-slate-50 dark:bg-[#0B0F19] backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-colors duration-500">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <section className={`fixed md:relative top-0 right-0 z-50 md:z-10 w-full max-w-sm md:max-w-none md:w-[30%] h-full flex flex-col bg-slate-50 dark:bg-[#0B0F19] backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
         <MoodWidget mood={mood} severity={severity} />
         <ActionPlan plan={actionPlan} />
       </section>

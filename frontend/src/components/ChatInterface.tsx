@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Mic } from 'lucide-react';
+import { Send, Bot, User, Mic, Menu, X, Trash2, Download } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import Image from 'next/image';
 
@@ -15,9 +15,11 @@ interface Message {
 interface ChatInterfaceProps {
   onNewActionPlan: (plan: string[]) => void;
   onMoodUpdate: (mood: string, severity: number) => void;
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
 }
 
-export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInterfaceProps) {
+export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleSidebar, isSidebarOpen }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([
     { 
       role: 'bot', 
@@ -256,39 +258,49 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
   ];
 
   return (
-    <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300">
+    <div className="flex flex-col h-full bg-transparent border-r border-white/40 dark:border-white/5 relative overflow-hidden transition-colors duration-300 pb-[76px] sm:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300">
+      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/80 dark:border-white/5 bg-white/70 bg-opacity-80 dark:bg-navy/40 dark:bg-opacity-80 backdrop-blur-md sticky top-0 z-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-lg dark:shadow-black/20 transition-colors duration-300">
         <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-md shadow-purple/20 overflow-hidden bg-white">
             <Image src="/NeuraWell_logo.jpg" alt="NeuraWell Logo" width={40} height={40} className="object-cover w-full h-full" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-700 dark:text-white drop-shadow-sm dark:drop-shadow-md transition-colors duration-300">NeuraWell Chat</h1>
-            <p className="text-sm text-stone-400 dark:text-stone-300 font-medium transition-colors duration-300">Your safe space to talk</p>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-700 dark:text-white drop-shadow-sm dark:drop-shadow-md transition-colors duration-300">NeuraWell Chat</h1>
+            <p className="hidden sm:block text-sm text-stone-400 dark:text-stone-300 font-medium transition-colors duration-300">Your safe space to talk</p>
           </div>
         </div>
         
         {/* Chat Controls */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3">
           <ThemeToggle />
-          <button onClick={handleExportChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
-            Export
+          <button onClick={handleExportChat} title="Export Chat" className="flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+            <Download size={16} className="sm:mr-1.5" />
+            <span className="hidden sm:inline text-xs font-semibold">Export</span>
           </button>
-          <button onClick={handleClearChat} className="text-xs font-semibold px-4 py-2 rounded-full border border-black/10 dark:border-white/10 bg-transparent text-slate-600 dark:text-white/70 hover:border-red-500/30 dark:hover:border-red-500/50 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors duration-300">
-            Clear Chat
+          <button onClick={handleClearChat} title="Clear Chat" className="flex items-center justify-center p-2 sm:px-4 sm:py-2 rounded-full border border-black/10 dark:border-white/10 bg-transparent text-slate-600 dark:text-white/70 hover:border-red-500/30 dark:hover:border-red-500/50 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 hover:-translate-y-0.5 hover:shadow-lg transition-colors duration-300">
+            <Trash2 size={16} className="sm:mr-1.5" />
+            <span className="hidden sm:inline text-xs font-semibold">Clear</span>
           </button>
+          {onToggleSidebar && (
+            <button 
+              onClick={onToggleSidebar}
+              className="md:hidden p-2 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-600 dark:text-slate-200 transition-colors"
+            >
+              {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-6 space-y-6">
         {messages.map((msg, idx) => {
           const isPoem = msg.role === 'bot' && !msg.isEmergency && msg.content.split('\n').length > 3;
           
           return (
             <div key={idx} className={`flex animate-slide-up-fade ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`flex max-w-[80%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex max-w-[95%] sm:max-w-[80%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm dark:shadow-md ${msg.role === 'user' ? 'bg-gradient-to-br from-sky-500 to-indigo-500 ml-3 shadow-sky-500/20' : 'bg-white/70 dark:bg-navy/60 border border-white/80 dark:border-white/10 mr-3 transition-colors duration-300 animate-pulse'}`}>
                   {msg.role === 'user' ? <User size={16} className="text-white" /> : <Bot size={16} className="text-purple" />}
                 </div>
@@ -314,7 +326,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
         })}
         {isLoading && (
           <div className="flex justify-start mb-6 animate-slide-up-fade">
-            <div className="flex flex-row max-w-[80%]">
+            <div className="flex flex-row max-w-[95%] sm:max-w-[80%]">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/70 dark:bg-navy/60 border border-white/80 dark:border-white/10 mr-3 flex items-center justify-center shadow-sm dark:shadow-md transition-colors duration-300 animate-pulse">
                 <Bot size={16} className="text-purple" />
               </div>
@@ -331,9 +343,9 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
         )}
         {/* Icebreaker Prompts */}
         {messages.length === 1 && !isLoading && (
-          <div className="flex flex-col items-center justify-center mt-10 space-y-4 animate-slide-up-fade">
+          <div className="flex flex-col items-center justify-center mt-10 space-y-4 animate-slide-up-fade px-2 text-center">
             <p className="text-sm text-foreground/50 mb-2">Not sure what to say? Try one of these:</p>
-            <div className="flex flex-wrap justify-center gap-3 max-w-[80%]">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 max-w-full sm:max-w-[80%]">
               {icebreakers.map((text, idx) => (
                 <button 
                   key={idx}
@@ -354,7 +366,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate }: ChatInt
       </div>
 
       {/* Input */}
-      <div className="p-6 bg-white/70 bg-opacity-80 dark:bg-navy/20 dark:bg-opacity-80 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)] relative z-10 transition-colors duration-300">
+      <div className="p-4 sm:p-6 bg-white/70 bg-opacity-80 dark:bg-navy/20 dark:bg-opacity-80 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)] absolute sm:relative bottom-0 left-0 right-0 z-10 transition-colors duration-300">
         <div className="relative flex items-center max-w-4xl mx-auto w-full">
           <input
             type="text"
