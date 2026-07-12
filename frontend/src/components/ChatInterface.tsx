@@ -294,7 +294,9 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pt-24 sm:pt-28 space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 relative">
+        {/* Spacer for fixed header */}
+        <div className="h-20 md:h-24 shrink-0 w-full" />
         {messages.map((msg, idx) => {
           const isPoem = msg.role === 'bot' && !msg.isEmergency && msg.content.split('\n').length > 3;
           
@@ -366,7 +368,7 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
       </div>
 
       {/* Input */}
-      <div className="p-4 sm:p-6 bg-white/70 bg-opacity-80 dark:bg-navy/20 dark:bg-opacity-80 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-10 transition-colors duration-300 shrink-0">
+      <div className="sticky bottom-0 left-0 w-full bg-background border-t border-border/50 z-40 p-4">
         <div className="relative flex items-center max-w-4xl mx-auto w-full">
           <input
             type="text"
