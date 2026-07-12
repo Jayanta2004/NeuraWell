@@ -273,10 +273,10 @@ export default function ChatInterface({ onNewActionPlan, onMoodUpdate, onToggleS
         
         {/* Chat Controls */}
         <div className="flex items-center gap-3 ml-auto shrink-0">
-          <div className="hidden md:flex">
+          <div className="flex">
             <ThemeToggle />
           </div>
-          <button onClick={handleExportChat} title="Export Chat" className="flex items-center justify-center p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 transition-colors">
+          <button onClick={handleExportChat} title="Export Chat" className="hidden md:flex items-center justify-center p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 transition-colors">
             <Download size={20} className="sm:mr-1.5" />
             <span className="hidden sm:block text-xs font-semibold">Export</span>
           </button>
