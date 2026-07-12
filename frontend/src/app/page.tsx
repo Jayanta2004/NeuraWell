@@ -38,7 +38,7 @@ export default function Home() {
       )}
 
       {/* Sidebar */}
-      <section className={`fixed md:relative top-0 right-0 z-50 md:z-10 w-full max-w-sm md:max-w-none md:w-[30%] h-full flex flex-col bg-slate-50 dark:bg-[#0B0F19] backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
+      <section className={`fixed md:relative top-0 right-0 z-50 md:z-10 w-full max-w-sm md:max-w-none md:w-[30%] h-full flex flex-col gap-6 bg-slate-50 dark:bg-[#0B0F19] backdrop-blur-3xl border-l border-white/80 dark:border-white/5 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
         
         {/* Mobile Sidebar Header with Close Button */}
         <div className="md:hidden flex items-center justify-between p-4 border-b border-stone-200 dark:border-white/5 bg-white/50 dark:bg-navy/20 backdrop-blur-md sticky top-0 z-20">

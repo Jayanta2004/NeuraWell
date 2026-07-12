@@ -6,7 +6,7 @@ interface ActionPlanProps {
 
 export default function ActionPlan({ plan }: ActionPlanProps) {
   return (
-    <div className="h-full bg-transparent flex flex-col relative overflow-hidden">
+    <div className="flex-1 min-h-0 bg-transparent flex flex-col relative overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-white/80 dark:border-white/5 bg-white/70 dark:bg-navy/20 backdrop-blur-3xl sticky top-0 z-10 flex items-center shadow-sm shadow-stone-200/40 dark:shadow-lg dark:shadow-black/30 transition-colors duration-300">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple flex items-center justify-center text-white mr-4 shadow-md shadow-purple/20">
