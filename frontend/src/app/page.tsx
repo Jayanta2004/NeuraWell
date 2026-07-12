@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <main className="flex flex-col md:flex-row h-[100dvh] w-full bg-background overflow-hidden relative">
       {/* Chat Interface */}
-      <section className="w-full md:w-[70%] flex-1 flex flex-col relative z-10">
+      <section className="w-full md:w-[70%] flex-1 min-h-0 flex flex-col relative z-10">
         <ChatInterface
           onNewActionPlan={setActionPlan}
           onMoodUpdate={handleMoodUpdate}
