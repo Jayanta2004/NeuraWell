@@ -37,7 +37,7 @@ body {
   color: var(--color-foreground);
   background-color: var(--color-background);
   font-family: var(--font-inter), sans-serif;
-  height: 100vh;
+  height: 100dvh;
   margin: 0;
   overflow: hidden;
 }
